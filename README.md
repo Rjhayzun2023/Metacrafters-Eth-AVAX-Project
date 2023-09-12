@@ -41,9 +41,6 @@ This Solidity smart contract, named **rjToken**, fulfills the requirements outli
 - Constructor:
   - The constructor initializes the contract with the owner's address.
 
-- Modifier
-  - uses the `require` statement to check if the set owner was the imediate.
-
 - **set** function:
   - This function allows the owner to set the name, abbreviation, total supply, and the owner's balance of the token. `For code demo only`
 
