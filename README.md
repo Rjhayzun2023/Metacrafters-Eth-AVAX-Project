@@ -1,6 +1,6 @@
-# RJToken Smart Contract
+# Eth + Avax Proof Smart Contract
 
-This is a simple Solidity smart contract called **RJTOKEN** that implements functions and error functionalities for creating and managing a custom token. The contract includes features like minting new tokens, burning existing tokens and lastly transfering tokens.
+This is a Solidity smart contract named `FunctionsAndErrorHandling` that demonstrates various error-handling techniques using `require`, `revert`, and `assert` statements.
 
 ## Table of Contents
 
@@ -20,82 +20,128 @@ Upload your solution to GitHub and share the link with us along with a quick cod
 
 ## Contract Overview
 
-This Solidity smart contract, named **rjToken**, fulfills the requirements outlined above. Here's an overview of the contract:
+### Functions
 
-- Public variables:
-  - `name`: A string representing the name of the token.
-  - `abbrv`: A string representing the abbreviation of the token.
-  - `totalSupply`: An unsigned integer representing the total supply of the token.
+- `testRequire(uint _value1)`
 
-- Events:
-  - `Mint(address indexed to, uint amount)`: An event emitted when tokens are minted.
-  - `Burn(address indexed from, uint amount)`: An event emitted when tokens are burned.
-  - `Transfer(address indexed from, address indexed to, uint amount)`: An event emitted when tokens are transferred.
+This function tests error handling with a `require` statement. It takes one parameter, `_value1`, and ensures that it is greater than zero. If the condition is not met, it will revert with an error message.
 
-- Custom error:
-  - `InsufficientBalance(uint balance, uint withdrawAmount)`: A custom error used for handling cases where an account has an insufficient balance.
+- `testRevert(uint _value1)`
 
-- Mapping:
-  - `balances`: A mapping that associates Ethereum addresses with their token balances.
+This function tests error handling with both `revert` and `require` statements. It checks if `_value1` is an odd number and, if so, reverts with an "Odd number" error message.
 
-- Constructor:
-  - The constructor initializes the contract with the owner's address.
+- `testAssert(uint _value1, uint _value2)`
 
-- **set** function:
-  - This function allows the owner to set the name, abbreviation, total supply, and the owner's balance of the token. `For code demo only`
+This function tests error handling with an `assert` statement. It checks if `_value1` is not divisible by `_value2`. If the condition is not satisfied, it will trigger an assertion error.
 
-- **mint** function:
-  - This function allows the owner to mint new tokens and assign them to a specified address.
+### Events
 
-- **burn** function:
-  - This function allows the owner to burn tokens from a specified address. It includes conditional checks to ensure that the specified address has a balance greater than or equal to the amount to be burned. If the conditional statement is true it will call the statement `revert`, which will display an error message `InsufficientBalance`.
+The contract emits the following events during execution:
 
-- **transfer** function:
-  - This function allows the owner to transfer tokens from their own address to another address. It uses the `assert` statement to ensure that the sender has a sufficient balance before transferring.
+- `ValueChecked1(bool boolean, uint value)`: Emits when the `testRequire` function is called. Logs whether the require condition was checked and the provided value.
 
+- `ValueChecked2(bool isOdd, uint value)`: Emits when the `testRevert` function is called. Logs whether the value is odd and the provided value.
+
+- `ValueAsserted(uint result)`: Emits when the `testAssert` function is called.
 ## Usage
 
-Step 1: Open Remix
+### Install
 
-Visit https://remix.ethereum.org/ in your web browser to access the Remix Ethereum IDE.
+1. Install [Node.js](https://nodejs.org)
 
-Step 2: Create a New File
+   Download and install from the official site.
 
-In the Remix IDE, you'll see the "File Explorers" panel on the left side. Right-click on the "contracts" folder and select "New File." Name the file "rjToken.sol."
+2. Install [Truffle](https://github.com/trufflesuite/truffle)
 
-Step 3: Copy and Paste the Smart Contract Code
+   ```bash
+   npm install -g truffle
+   ```
 
-Copy the entire "rjToken" smart contract code and paste it into the "rjToken.sol" file in Remix.
 
-Step 4: Compile the Smart Contract
+### Initialize
 
-In the Remix IDE, navigate to the "Solidity Compiler" tab on the left sidebar.
-Select the "rjToken.sol" file from the file explorer.
-Choose the appropriate compiler version. In this case, choose "0.8.18," which is specified in your contract.
-Click the "Compile rjToken.sol" button. The contract should compile without errors.
-Step 5: Deploy the Smart Contract
+1. Initialize Truffle in your project folder
 
-Navigate to the "Deploy & Run Transactions" tab on the left sidebar.
-In the "Environment" section, select "JavaScript VM" to deploy the contract on a simulated blockchain provided by Remix.
-In the "Deploy" section, select the "rjToken" contract from the dropdown.
-Click the "Deploy" button. This will deploy the "rjToken" contract to the simulated blockchain.
+   ```bash
+   truffle init
+   ```
 
-Step 6: Interact with the Contract
+   After initialization, you will find two folders called `contracts` and `migrations`. Contracts go in the `contracts` folder while contract deployment settings go in `migrations`.
 
-Now that the contract is deployed, you can interact with it using Remix's interface.
+2. The "FunctionAndErrorHandling" contract
 
-You can set token information by calling the "set" function. Click the "set" function, enter the desired name and abbreviation for your token, and click "transact." This will set the name and abbreviation for your token.
 
-You can mint new tokens using the "mint" function. Provide an address and the number of tokens you want to mint, then click "transact."
+   ```solidity
+      // SPDX-License-Identifier: MIT
+      // Compiler version must be greater than or equal to 0.8.17 and less than 0.9.0
+      pragma solidity ^0.8.17;
+      
+      contract FunctionsAndErrorHandling {
 
-You can burn tokens using the "burn" function. Provide an address and the number of tokens you want to burn, then click "transact."
+    event ValueChecked1(bool boolean, uint value);
+    event ValueChecked2(bool isOdd, uint value);
+    event ValueAsserted(uint result);
 
-You can transfer tokens from one address to another using the "transfer" function. Provide the recipient's address and the number of tokens to transfer, then click "transact."
+    // Function for testing error handling with a require statement
+    function testRequire(uint _value1) public  returns (uint) {
+        require(_value1 > 0, "Value must be greater than 0");
+        emit ValueChecked1(true, _value1); // Log that the require condition was checked
+        return _value1;
+    }
 
-Step 7: Test and Explore
+    // Function for testing error handling with revert and require statements
+    function testRevert(uint _value1) public  {
+        if (_value1 % 2 != 0) {
+            emit ValueChecked2(true, _value1); // Log that the value is odd
+            revert("Odd number");
+        }
+    }
 
-You can continue testing and exploring the functionalities of the "rjToken" smart contract in Remix.
+    // Function for testing error handling with assert statement
+    function testAssert(uint _value1, uint _value2) public  returns (uint) {
+        assert(_value1 % _value2 != 0);
+        emit ValueAsserted(_value1 / _value2); // Log the result of the assert
+        return _value1 / _value2;
+    }
+}
 
+   ```
+
+3. Prepare the migration
+
+   "2_deploy_migration.js" in `migrations` contains the following code:
+
+   ```javascript
+   var Project1 = artifacts.require("FunctionAndErrorHandling");
+   module.exports = function(deployer) {
+     deployer.deploy(Project1);
+   }
+   ```
+
+4. Start Truffle console in development mode
+
+   ```bash
+   truffle develop
+   ```
+
+   In the Truffle console, execute
+
+   ```bash
+   compile
+   migrate
+   ```
+   If you want to remigrate existing contracts, run `migrate --reset` instead of simply `migrate`.
+
+5. Test your contract
+
+   In the interactive Truffle console, run the following commands:
+
+   ```javascript
+   let instance = await FunctionAndErrorHandling.deployed()
+   instance.testRequire(<parameter>)
+   instance.testRevert(<parameter>)
+   instance.testAssert(<parameter>,<parameter>)
+   ```
 ## Authors
 
 Metacrafter Randel Jason B. Espiritu
@@ -106,4 +152,4 @@ This contract is released under the MIT License. You can find the license inform
 
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.17;
